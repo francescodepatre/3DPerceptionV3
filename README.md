@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentazione del Sistema di Rilevamento e Elaborazione Dati</title>
+    <h1>Documentazione del Sistema di Rilevamento e Elaborazione Dati</h1>
 </head>
 <body>
     <h1>Sistema di Rilevamento e Elaborazione Dati</h1>
