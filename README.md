@@ -1,145 +1,93 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Documentation</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f9;
-        }
-        h1 {
-            color: #2c3e50;
-        }
-        h2 {
-            color: #34495e;
-        }
-        pre {
-            background-color: #2d3436;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            overflow-x: auto;
-        }
-        .section {
-            margin-bottom: 20px;
-        }
-        .code-block {
-            background-color: #ecf0f1;
-            padding: 10px;
-            border-radius: 5px;
-            overflow-x: auto;
-        }
-    </style>
+    <title>Documentazione del Sistema di Rilevamento e Elaborazione Dati</title>
 </head>
 <body>
+    <h1>Sistema di Rilevamento e Elaborazione Dati</h1>
+    <p>Questo repository contiene diversi script per il rilevamento di oggetti, l'elaborazione dei dati acquisiti da sensori (RGB e profondità), e l'analisi multimodale utilizzando un modello LSTM. È suddiviso in tre file principali:</p>
+    <ul>
+        <li><strong>online_detection.py</strong>: esegue il rilevamento in tempo reale utilizzando YOLOv11 per identificare oggetti nelle immagini RGB.</li>
+        <li><strong>offline_detection.py</strong>: esegue il rilevamento su file video pre-registrati (RGB e profondità), applicando YOLOv11 e salvando i risultati.</li>
+        <li><strong>post_processing.py</strong>: gestisce i dati ottenuti, calcola le distanze e aggiorna una mappa in tempo reale, salvando i risultati in un file CSV.</li>
+    </ul>
 
-    <h1>Project Documentation</h1>
+    <h2>Requisiti</h2>
+    <p>Prima di eseguire gli script, assicurati di avere i seguenti pacchetti Python installati:</p>
+    <ul>
+        <li><code>opencv-python</code></li>
+        <li><code>numpy</code></li>
+        <li><code>folium</code></li>
+        <li><code>requests</code></li>
+        <li><code>torch</code></li>
+        <li><code>shapely</code></li>
+        <li><code>pyproj</code></li>
+        <li><code>pandas</code></li>
+        <li><code>ultralytics</code> (per YOLOv11)</li>
+        <li><code>torchvision</code></li>
+    </ul>
+    <p>Per installarli, puoi usare <code>pip</code>:</p>
+    <pre><code>pip install opencv-python numpy folium requests torch shapely pyproj pandas ultralytics torchvision</code></pre>
 
-    <div class="section">
-        <h2>online_detection.py</h2>
-        <h3>Overview</h3>
-        <p>This Python script is designed to perform real-time detection of human faces using a YOLO model. It captures live video from a webcam and detects faces in the video stream, displaying bounding boxes and confidence scores for each detection.</p>
-        
-        <h3>Features</h3>
-        <ul>
-            <li>Real-time face detection using YOLOv5 model</li>
-            <li>Draws bounding boxes around detected faces in the video stream</li>
-            <li>Displays confidence scores for each detected face</li>
-            <li>Provides an option to save the processed video with annotations</li>
-        </ul>
+    <h2>Descrizione degli Script</h2>
 
-        <h3>Requirements</h3>
-        <pre>pip install opencv-python ultralytics</pre>
+    <h3>1. online_detection.py</h3>
+    <p>Questo script esegue il rilevamento in tempo reale di oggetti (persone) utilizzando YOLOv11 su flussi video da telecamere RGB. Le informazioni relative alle posizioni degli oggetti vengono salvate in tempo reale.</p>
+    <p><strong>Funzioni principali:</strong></p>
+    <ul>
+        <li>Caricamento del modello YOLO.</li>
+        <li>Rilevamento di persone nel flusso video.</li>
+        <li>Acquisizione delle coordinate delle persone e calcolo della distanza tramite mappa di profondità.</li>
+    </ul>
 
-        <h3>Input</h3>
-        <ul>
-            <li>Live video stream (webcam feed)</li>
-        </ul>
+    <h3>2. offline_detection.py</h3>
+    <p>Questo script è simile al precedente, ma esegue il rilevamento su file video pre-registrati (RGB e profondità), permettendo di elaborare i dati offline.</p>
+    <p><strong>Funzioni principali:</strong></p>
+    <ul>
+        <li>Caricamento di video RGB e di profondità.</li>
+        <li>Applicazione di YOLOv11 per il rilevamento degli oggetti.</li>
+        <li>Salvataggio dei risultati delle rilevazioni in un file di log.</li>
+    </ul>
 
-        <h3>Output</h3>
-        <ul>
-            <li>Processed video file with bounding boxes and confidence scores</li>
-        </ul>
+    <h3>3. post_processing.py</h3>
+    <p>Questo script elabora i risultati ottenuti dai rilevamenti, calcola le distanze reali e predette, e aggiorna una mappa interattiva con le posizioni degli oggetti rilevati.</p>
+    <p><strong>Funzioni principali:</strong></p>
+    <ul>
+        <li>Calcolo delle distanze reali e predette.</li>
+        <li>Salvataggio delle distanze in un file CSV.</li>
+        <li>Aggiornamento della mappa con le posizioni GPS, utilizzando il modulo <code>folium</code>.</li>
+        <li>Creazione di una mappa HTML interattiva con le posizioni degli oggetti rilevati.</li>
+    </ul>
 
-        <h3>Usage</h3>
-        <pre>
-python online_detection.py
-        </pre>
-    </div>
+    <h2>Utilizzo</h2>
 
-    <div class="section">
-        <h2>offline_detection.py</h2>
-        <h3>Overview</h3>
-        <p>This Python script processes a pre-recorded video file to detect faces using the YOLO model. It operates similarly to the real-time detection script but works with an offline video source instead of a live feed.</p>
-        
-        <h3>Features</h3>
-        <ul>
-            <li>Offline face detection using YOLOv5 model</li>
-            <li>Processes video frames and draws bounding boxes around detected faces</li>
-            <li>Displays confidence scores for each detection</li>
-            <li>Saves the processed video with annotations</li>
-        </ul>
+    <h3>1. online_detection.py</h3>
+    <p>Esegui lo script per il rilevamento in tempo reale:</p>
+    <pre><code>python online_detection.py</code></pre>
+    <p>Lo script eseguirà il rilevamento delle persone nel flusso video e salverà i risultati in un file CSV.</p>
 
-        <h3>Requirements</h3>
-        <pre>pip install opencv-python ultralytics</pre>
+    <h3>2. offline_detection.py</h3>
+    <p>Per eseguire il rilevamento su un file video esistente, utilizza il seguente comando:</p>
+    <pre><code>python offline_detection.py</code></pre>
+    <p>Il file video dovrebbe essere posizionato nella stessa directory dello script o specificare il percorso corretto nei parametri.</p>
 
-        <h3>Input</h3>
-        <ul>
-            <li>Pre-recorded video file (e.g., `input_video.mp4`)</li>
-        </ul>
+    <h3>3. post_processing.py</h3>
+    <p>Dopo aver eseguito uno dei due script precedenti, utilizza <code>post_processing.py</code> per elaborare i dati raccolti:</p>
+    <pre><code>python post_processing.py</code></pre>
+    <p>Questo script aggiornerà la mappa e salverà un file CSV con le distanze calcolate.</p>
 
-        <h3>Output</h3>
-        <ul>
-            <li>Processed video file with bounding boxes and confidence scores</li>
-        </ul>
+    <h2>Output</h2>
+    <ul>
+        <li><strong>Mappe interattive:</strong> Verranno generate mappe in formato HTML con le posizioni degli oggetti rilevati.</li>
+        <li><strong>File CSV:</strong> Ogni script salverà un file CSV contenente i dati relativi alle distanze reali e predette.</li>
+    </ul>
 
-        <h3>Usage</h3>
-        <pre>
-python offline_detection.py
-        </pre>
-    </div>
+    <h2>Contribuire</h2>
+    <p>Se desideri contribuire a questo progetto, fai un fork del repository e invia una pull request con le modifiche.</p>
 
-    <div class="section">
-        <h2>post_processing.py</h2>
-        <h3>Overview</h3>
-        <p>This Python script processes RGB and depth data captured from Kinect sensors and uses a YOLOv11 model to detect human faces in the RGB frames. It calculates the real-world distance of detected faces using depth information, and then combines this with GPS coordinates to create a map of face locations. Additionally, the script logs the distance data and visualizes the results in both a video and an interactive map.</p>
-
-        <h3>Features</h3>
-        <ul>
-            <li>Face Detection: Uses YOLOv11 for detecting human faces in RGB video frames</li>
-            <li>Depth Calculation: Uses depth maps to calculate the real-world distance of detected faces</li>
-            <li>Multimodal Prediction: Combines RGB images and numerical data (distance, GPS, and orientation) to make multimodal predictions using a custom LSTM model</li>
-            <li>Map Generation: Generates an interactive map showing the locations of detected faces relative to the Kinect sensor, using the GPS coordinates and calculated distance</li>
-            <li>Video Output: Saves the processed RGB video with bounding boxes and distance annotations</li>
-            <li>CSV Logging: Saves the real and predicted distances of detected faces in a CSV file</li>
-        </ul>
-
-        <h3>Requirements</h3>
-        <pre>pip install opencv-python folium pyproj shapely ultralytics torch torchvision pandas requests</pre>
-
-        <h3>Input</h3>
-        <ul>
-            <li>RGB Video: A video file (`freesbee_rgb.mp4`) containing the RGB frames from the Kinect camera</li>
-            <li>Depth Video: A video file (`freesbee_depth.mp4`) containing the depth maps from the Kinect camera</li>
-            <li>GPS Location File: A text file (`GPS_location_data.txt`) containing the GPS coordinates (latitude and longitude) of the Kinect sensor</li>
-        </ul>
-
-        <h3>Output</h3>
-        <ul>
-            <li>CSV File: The real and predicted distances of detected faces saved in `distances.csv`</li>
-            <li>Video File: A processed video file with annotated bounding boxes and predicted distances saved as `output_video_<timestamp>.mp4`</li>
-            <li>Map File: An HTML file (`kinect_map<timestamp>.html`) displaying the detected faces on an interactive map with the Kinect sensor as the origin</li>
-        </ul>
-
-        <h3>Usage</h3>
-        <pre>
-python post_processing.py
-        </pre>
-    </div>
-
+    <h2>Licenza</h2>
+    <p>Questo progetto è sotto la licenza MIT - vedi il file <a href="LICENSE">LICENSE</a> per dettagli.</p>
 </body>
 </html>
