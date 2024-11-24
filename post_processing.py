@@ -78,7 +78,16 @@ def get_location(file_path):
     except (IOError, ValueError) as e:
         print(f"Errore nella lettura del file o nel parsing delle coordinate: {e}")
         return None, None
-
+    
+def compass_face(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            comp = float(file.readline().strip())
+            return comp
+    except (IOError, ValueError) as e:
+        print(f"Errore nella lettura del file o nel parsing delle coordinate: {e}")
+        return None
+    
 def calcola_angolo(x):
     width = int(cap_rgb.get(cv2.CAP_PROP_FRAME_WIDTH))
     cx=width/2
@@ -116,7 +125,8 @@ def update_map(kinect_lat, kinect_lon, face_positions, angle):
 
 latitude, longitude = get_location('GPS_location_data.txt')
 
-angle=28.12
+angle=compass_face('Compass.txt')
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 model = MultiModalModel.MultiModalLSTMModel().to(device)
